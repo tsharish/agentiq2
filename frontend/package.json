@@ -42,5 +42,8 @@
         "vite": "^6.2.4",
         "vite-plugin-vue-devtools": "^7.7.2",
         "vue-tsc": "^2.2.8"
+    },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.40.0"
     }
 }
