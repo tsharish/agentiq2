@@ -1,0 +1,6 @@
+# requirements.in
+openai
+LLMEasyTools
+python-dotenv
+fastapi[standard]
+pyjwt[crypto]

@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+
+# Distribution / packaging
+static/
+upload/
+
+# Environments
+.env
+venv/
+.vscode/
+
+# Jupyter Notebooks
+notebooks/
+*.ipynb
+.ipynb_checkpoints
+
+# Logs
+*.log

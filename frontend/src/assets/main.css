@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "tailwindcss-primeui";
+
+.card {
+    background: var(--card-background);
+    border: var(--card-border);
+    padding: 2rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
