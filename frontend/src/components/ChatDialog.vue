@@ -82,6 +82,10 @@ watch(messages, scrollToBottom, { deep: true })
         <div ref="chatContainer" class="chat-box">
             <ChatMessage v-for="message in messages" :role="message.role" :message="message.content.trim()"
                 :key="message.content" />
+            <div v-show="waiting" class="flex flex-row items-center rounded-md p-2 bg-blue-50 dark:bg-blue-950">
+                <fa-icon icon="fa-solid fa-robot" class="text-blue-600 mr-4" />
+                <Skeleton height="1.5rem" borderRadius="16px"></Skeleton>
+            </div>
         </div>
         <template #footer>
             <div>
