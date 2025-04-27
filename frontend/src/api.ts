@@ -1,17 +1,11 @@
-import router from "@/router"
-import axios from "axios"
+import router from '@/router'
+import axios from 'axios'
+import { getAccessToken } from './utils'
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL })
 
 api.interceptors.request.use((config) => {
-    let user = null
-    const userInStorage = localStorage.getItem('user')
-    if (userInStorage) {
-        user = JSON.parse(userInStorage)
-    }
-    if (user && user.access_token) {
-        config.headers["Authorization"] = `Bearer ${user.access_token}`
-    }
+    config.headers['Authorization'] = getAccessToken()
     return config
 }, (error) => {
     return Promise.reject(error)

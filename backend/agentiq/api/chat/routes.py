@@ -37,10 +37,18 @@ agent = Agent(tools=tools, system_message=system_message)
 @router.post("/")
 async def chat(message: Message, user: str = Depends(get_current_user)):
     """Chat endpoint that processes user messages through the AI agent."""
+    headers = {
+        "X-Accel-Buffering": "no",
+        "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff",
+        "Connection": "keep-alive",
+    }
+
     try:
         return StreamingResponse(
             agent.run(message=message.content, session_id=message.session_id),
-            media_type="application/x-ndjson",
+            headers=headers,
+            media_type="text/event-stream",
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

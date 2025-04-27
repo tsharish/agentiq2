@@ -1,6 +1,8 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue'
-import api from '@/api'
+import { SSE } from 'sse.js'
+import { getAccessToken } from '@/utils'
 import ChatMessage from '@/components/ChatMessage.vue'
 
 interface Message {
@@ -24,38 +26,28 @@ async function send() {
     input.value = ''
     messages.value.push({ role: 'user', content: userInput })
 
-    try {
-        const response = await api.post('/chat', { content: userInput, session_id: session_id.value }, {
-            responseType: 'stream',
-            adapter: 'fetch'
-        })
+    const source = new SSE(import.meta.env.VITE_API_URL + '/chat', {
+        headers: { 'Content-Type': 'application/json', 'Authorization': getAccessToken() },
+        payload: JSON.stringify({ content: userInput, session_id: session_id.value })
+    })
 
-        const reader = response.data.getReader()
-        const decoder = new TextDecoder()
-        let buffer = ''
+    source.addEventListener('message', (event: any) => {
+        const response = JSON.parse(event.data)
+        session_id.value = response.session_id
+        messages.value.push({ role: 'agent', content: response.content })
+    })
 
-        while (true) {
-            const { done, value } = await reader.read()
-            if (done) break
-
-            buffer += decoder.decode(value, { stream: true })
-
-            const lines = buffer.split('\n')
-            buffer = lines.pop() || '' // incomplete line stays in buffer
-
-            for (const line of lines) {
-                if (!line.trim()) continue
-                const chunk = JSON.parse(line)
-                session_id.value = chunk.session_id
-                messages.value.push({ role: 'agent', content: chunk.content })
-            }
+    source.addEventListener('readystatechange', (event: any) => {
+        if (event.readyState === 2) {   // Connection is closed
+            waiting.value = false
         }
-    } catch (error) {
-        console.log("Chat error:", error)
-        messages.value.push({ role: "agent", content: "Sorry, something went wrong. Please try again." })
-    }
+    })
 
-    waiting.value = false
+    source.addEventListener('error', (event: any) => {
+        waiting.value = false
+        console.log('Chat error:', event.data)
+        messages.value.push({ role: 'agent', content: 'Sorry, something went wrong. Please try again.' })
+    })
 }
 
 function newSession() {

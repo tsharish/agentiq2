@@ -48,9 +48,9 @@ class Agent:
             max_iterations -= 1
 
             if response.message.content:
-                yield json.dumps(
+                yield f"data: {json.dumps(
                     {"session_id": session_id, "content": response.message.content}
-                ) + "\n"
+                )}\n\n"
 
             if BASE_URL and "googleapis" in BASE_URL:
                 # https://ai.google.dev/gemini-api/docs/function-calling?example=meeting (Step 4)
@@ -69,12 +69,12 @@ class Agent:
                 if not tool:
                     raise ValueError(f"Tool {tool_call.function.name} not found.")
 
-                yield json.dumps(
+                yield f"data: {json.dumps(
                     {
                         "session_id": session_id,
                         "content": f"Invoking tool {tool_call.function.name}",
                     }
-                ) + "\n"
+                )}\n\n"
 
                 try:
                     tool_inputs = json.loads(tool_call.function.arguments)
@@ -105,7 +105,7 @@ class Agent:
         self.memory[session_id].append({"role": "assistant", "content": response.message.content})
 
         if response.message.content:
-            yield json.dumps({"session_id": session_id, "content": response.message.content}) + "\n"
+            yield f"data: {json.dumps({"session_id": session_id, "content": response.message.content})}\n\n"
 
     def _format_assistant_response(self, message: any):
         """Formats the ChatCompletionMessage to be returned to a model along with the tool call results"""

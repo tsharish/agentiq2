@@ -35,6 +35,6 @@ function formatDate(date: Date) {
             <fa-icon icon="fa-solid fa-rotate" />
         </Button>
         <EventCard v-for="event in events" :name="event.name" :date="event.date" :startTime="event.start_time"
-            :endTime="event.end_time" />
+            :endTime="event.end_time" :key="event.name" />
     </div>
 </template>
