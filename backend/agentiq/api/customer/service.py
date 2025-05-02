@@ -4,7 +4,7 @@ from .data import customers
 
 
 def get_customer_by_name(name: Annotated[str, "Customer Name"]):
-    """Returns customer details including address based on the name"""
+    """Returns customer details including customer ID and address based on the customer name"""
     name_lower = name.lower()
 
     # Try exact match first
@@ -50,7 +50,7 @@ def edit_customer(
     state: Annotated[str, "New State"],
     country: Annotated[str, "New Country"],
 ):
-    """Edits a customer record given the customer ID and new details"""
+    """Edits a customer record given the customer ID and new details of the customer"""
     customer = next((customer for customer in customers if customer["id"] == customer_id), None)
     if not customer:
         return f"Customer with ID {customer_id} not found."

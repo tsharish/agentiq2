@@ -5,7 +5,7 @@ from .data import opportunities
 
 
 def get_opportunity_by_name(name: Annotated[str, "Opportunity Name"]):
-    """Returns opportunity details based on the name"""
+    """Returns opportunity details including opportunity ID based on the opportunity name"""
     name_lower = name.lower()
 
     return [
@@ -62,7 +62,7 @@ def edit_opportunity(
     customer_id: Annotated[int, "New Customer ID"],
     amount: Annotated[float, "New Amount"],
 ):
-    """Edits an opportunity record given the opportunity ID and new details"""
+    """Edits an opportunity record given the opportunity ID and new details of the opportunity"""
     opportunity = next(
         (opportunity for opportunity in opportunities if opportunity["id"] == opportunity_id), None
     )
